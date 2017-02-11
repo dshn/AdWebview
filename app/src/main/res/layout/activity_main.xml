@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.adview.MainActivity">
+
+    <com.adview.ads.BannerAd
+        android:id="@+id/banner_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+    </com.adview.ads.BannerAd>
+
+    <com.adview.ads.FullscreenAd
+        android:id="@+id/ads_full_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </com.adview.ads.FullscreenAd>
+
+    <Button
+        android:id="@+id/btn_show_full_ad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="FullScreen Ad"/>
+</RelativeLayout>
