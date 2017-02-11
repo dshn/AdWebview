@@ -15,6 +15,9 @@ public class MainActivity extends AppCompatActivity {
     public String url="";
     private BannerAd bannerAd;
 
+    String fullScreenAdUrl="http://192.168.88.251/banner/call_fbanner.php";
+    String bannerAdUrl="http://192.168.88.251/banner/call_banner.php";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
         adFullScreen=(FullscreenAd)findViewById(R.id.ads_full_screen);
         bannerAd=(BannerAd)findViewById(R.id.banner_ad);
 
-        bannerAd.loadUrl("http://192.168.88.251/banner/call_banner.php");
-        adFullScreen.loadUrl("http://192.168.88.251/banner/call_fbanner.php");
+        bannerAd.loadUrl(bannerAdUrl);
+        adFullScreen.loadUrl(fullScreenAdUrl);
 
         btnShowFullId.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adFullScreen.textView.setOnClickListener(new View.OnClickListener() {
+        adFullScreen.btnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 adFullScreen.closeAd();

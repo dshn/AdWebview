@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
@@ -24,7 +26,7 @@ public class BannerAd extends FrameLayout {
 
     public BannerAd(Context context) {
         super(context);
-        if(!isInEditMode()){
+        if (!isInEditMode()) {
             deviceHeightWidth(context);
             init(context);
         }
@@ -32,7 +34,7 @@ public class BannerAd extends FrameLayout {
 
     public BannerAd(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if(!isInEditMode()){
+        if (!isInEditMode()) {
             deviceHeightWidth(context);
             init(context);
         }
@@ -40,44 +42,46 @@ public class BannerAd extends FrameLayout {
 
     public BannerAd(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if(!isInEditMode()){
+        if (!isInEditMode()) {
             deviceHeightWidth(context);
             init(context);
         }
     }
 
-    public BannerAd(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        if(!isInEditMode()){
-            deviceHeightWidth(context);
-            init(context);
-        }
-    }
 
-    public void init(Context context){
+    public void init(Context context) {
         // Create imageView params
         RelativeLayout.LayoutParams imageParams = null;
 
         //https://firebase.google.com/docs/admob/android/banner
-
-        imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        /*if(height<=400){
+        //setting ad size according to device
+        if (height <= 400) {
             imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dpToPx(32));
-        }else if(height> 400 && height <= 720){
+        } else if (height > 400 && height <= 720) {
             imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dpToPx(50));
-        }else if(height>720){
+        } else if (height > 720) {
             imageParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, dpToPx(90));
-        }*/
-      //  imageParams = new RelativeLayout.LayoutParams(width, height/8);
+        }
+        //  imageParams = new RelativeLayout.LayoutParams(width, height/8);
         imageParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         imageParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
-        webview=new WebView(context);
-
+        webview = new WebView(context);
         webview.setLayoutParams(imageParams);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new MyBrowser());
 
+        //disable only scrollbars and not scrolling
+        webview.setVerticalScrollBarEnabled(false);
+        webview.setHorizontalScrollBarEnabled(false);
+
+        // disable scroll on touch
+        webview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return (event.getAction() == MotionEvent.ACTION_MOVE);
+            }
+        });
         addView(webview);
 
     }
@@ -90,23 +94,34 @@ public class BannerAd extends FrameLayout {
         }
     }
 
-    public void loadUrl(String url){
+    /*
+        load url to webview
+     */
+    public void loadUrl(String url) {
         webview.loadUrl(url);
     }
 
+    //calculating height and width of device
     public void deviceHeightWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics displaymetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(displaymetrics);
 
-        height =Math.round(displaymetrics.heightPixels / (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        height = Math.round(displaymetrics.heightPixels / (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
         width = Math.round(displaymetrics.widthPixels / (displaymetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    /*
+    convert dp to pixel
+     */
     public int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
+
+    /*
+    convert pixel to dp
+     */
     public int pxToDp(int px) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));

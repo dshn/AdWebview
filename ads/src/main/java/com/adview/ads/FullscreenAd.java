@@ -3,11 +3,12 @@ package com.adview.ads;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
@@ -15,74 +16,94 @@ import android.widget.TextView;
  */
 
 public class FullscreenAd extends FrameLayout {
-    public TextView textView;
+    public TextView btnClose;
     private WebView webview;
 
     public FullscreenAd(Context context) {
         super(context);
-        if(!isInEditMode()){
+        if (!isInEditMode()) {
             init(context);
         }
     }
 
     public FullscreenAd(Context context, AttributeSet attrs) {
         super(context, attrs);
-        if(!isInEditMode()){
-
+        if (!isInEditMode()) {
             init(context);
         }
     }
 
     public FullscreenAd(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if(!isInEditMode()){
-
+        if (!isInEditMode()) {
             init(context);
         }
     }
 
-    public FullscreenAd(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        if(!isInEditMode()){
 
-            init(context);
-        }
-    }
+    public void init(Context context) {
+        webview = new WebView(context);
 
-    public void init(Context context){
-        webview=new WebView(context);
-
-        // Create imageView params
+       /* // Create imageView params
         RelativeLayout.LayoutParams imageParams;
         imageParams = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
 
-        imageParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        imageParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);*/
+
+        LayoutParams params = new LayoutParams(
+                LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT
+        );
+
+        //setting magin of close btn
+        params.setMargins(10, 10, 10, 10);
 
         // Create imageView
-        textView = new TextView(context);
-        textView.setText("X");
-        textView.setPadding(20,20,20,20);
-        textView.setTextSize(20);
-        textView.setTextColor(getResources().getColor(android.R.color.white));
-        textView.setLayoutParams(imageParams);
-
+        btnClose = new TextView(context);
+        btnClose.setText("X");
+        btnClose.setPadding(10, 10, 10, 10);
+        btnClose.setTextSize(20);
+        btnClose.setTextColor(getResources().getColor(android.R.color.white));
+        btnClose.setBackgroundColor(getResources().getColor(android.R.color.black));
+        btnClose.setLayoutParams(params);
         webview.getSettings().setJavaScriptEnabled(true);
         webview.setWebViewClient(new MyBrowser());
+
+        //disable only scrollbars and not scrolling
+        webview.setVerticalScrollBarEnabled(false);
+        webview.setHorizontalScrollBarEnabled(false);
+
+        // disable scroll on touch
+        webview.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return (event.getAction() == MotionEvent.ACTION_MOVE);
+            }
+        });
         addView(webview);
-        addView(textView);
+        addView(btnClose);
         closeAd();
     }
 
-    public void loadUrl(String url){
+    /*
+        load url to webview
+     */
+    public void loadUrl(String url) {
         webview.loadUrl(url);
     }
 
-    public void showAd(){
+    /*
+    makes the ad visible
+     */
+    public void showAd() {
         setVisibility(VISIBLE);
     }
 
-    public void closeAd(){
+    /*
+    close the ad
+     */
+    public void closeAd() {
         setVisibility(GONE);
     }
 
